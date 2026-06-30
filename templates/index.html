@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simulación · Bomba de insulina · Teoría de Control</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='panel.css') }}">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+</head>
+<body>
+  <header>
+    <button id="toggle-panel" title="Mostrar / ocultar panel de control">☰</button>
+    <div>
+      <h1>Bomba de insulina · Lazo cerrado de control</h1>
+      <p class="sub">TP Integrador de Teoría de Control — UTN-FRBA · K4011 · 2026 — Moll / Maffini</p>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ Columna de controles ============ -->
+    <aside id="controles">
+
+      <!-- ====== ZONA 1: CONFIGURACIÓN ====== -->
+      <div class="seccion-titulo">Configuración</div>
+
+      <div class="presets">
+        <strong>Escenarios:</strong>
+        <button class="preset" data-preset="comida">1 comida</button>
+        <button class="preset" data-preset="dia">24 h · 4 comidas</button>
+      </div>
+
+      <details open>
+        <summary>Referencia</summary>
+        <label>Set point r <span class="u">mg/dL</span><input type="number" id="r0" step="1"></label>
+      </details>
+
+      <details>
+        <summary>Bomba: saturación e IOB</summary>
+        <label>u mínima <span class="u">U/h</span><input type="number" id="u_min" step="0.1"></label>
+        <label>u máxima <span class="u">U/h</span><input type="number" id="u_max" step="0.5"></label>
+        <label>Resolución <span class="u">U</span><input type="number" id="u_res" step="0.01"></label>
+        <label>Tope IOB <span class="u">U/h sobre basal</span><input type="number" id="iob_max" step="0.5"></label>
+      </details>
+
+      <details>
+        <summary>Tiempos de simulación</summary>
+        <label>Duración <span class="u">h</span><input type="number" id="T_horas" step="1"></label>
+        <label>T<sub>s</sub> control <span class="u">min</span><input type="number" id="Ts" step="1"></label>
+        <label>dt interno <span class="u">min</span><input type="number" id="dt" step="0.5"></label>
+      </details>
+
+      <details open id="bloque-eventos">
+        <summary>Perturbaciones / eventos</summary>
+        <div class="evento-form">
+          <select id="ev-tipo">
+            <option value="comida">Comida (sube glucemia)</option>
+            <option value="ejercicio">Ejercicio (baja glucemia)</option>
+            <option value="estres">Estrés / amanecer (sube sostenido)</option>
+          </select>
+          <label class="inline">Hora <input type="number" id="ev-hora" value="8" step="0.5" min="0"> h</label>
+          <label class="inline">Duración <input type="number" id="ev-dur" value="120" step="10" min="0"> min</label>
+          <label class="inline">Magnitud <input type="number" id="ev-mag" value="90" step="5"> mg/dL</label>
+          <button id="ev-add">Agregar evento</button>
+        </div>
+        <table id="ev-tabla">
+          <thead><tr><th>Tipo</th><th>Hora</th><th>Dur</th><th>Mag</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </details>
+
+      <div class="acciones">
+        <button id="btn-reset">Restablecer parámetros</button>
+        <button id="btn-png">Descargar PNG</button>
+      </div>
+
+      <!-- ====== ZONA 2: SIMULADOR EN TIEMPO REAL ====== -->
+      <div class="seccion-vivo">
+        <div class="seccion-titulo">Tiempo real</div>
+        <button id="btn-play">▶ Iniciar tiempo real</button>
+        <div class="vivo-panel">
+          <label class="slider-row">
+            <span>Velocidad <b id="velLabel">1.0×</b></span>
+            <input type="range" id="vel" min="0.5" max="4" step="0.5" value="1">
+          </label>
+          <p class="vivo-hint">Mientras corre, agregá un evento para ver su impacto en vivo:</p>
+          <div class="vivo-botones">
+            <button id="btn-comida-liviana">Comida liviana (ahora)</button>
+            <button id="btn-comida-alta">Comida alta en glucosa (ahora)</button>
+            <button id="btn-ejercicio">Ejercicio (ahora)</button>
+            <button id="btn-estres">Situación estresante (ahora)</button>
+            <button id="btn-reiniciar">↺ Reiniciar</button>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ============ Columna de resultados ============ -->
+    <section id="resultados">
+      <div id="qos"></div>
+      <div id="plots"></div>
+    </section>
+  </main>
+
+  <script>window.DEFAULTS = {{ defaults | tojson }};</script>
+  <script src="{{ url_for('static', filename='livesim.js') }}"></script>
+  <script src="{{ url_for('static', filename='panel.js') }}"></script>
+</body>
+</html>

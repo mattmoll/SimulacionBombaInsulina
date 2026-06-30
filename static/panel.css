@@ -1,0 +1,192 @@
+:root {
+  --bg: #0f1420;
+  --panel: #1a2030;
+  --panel2: #232b3d;
+  --line: #2e3950;
+  --txt: #e6ebf5;
+  --muted: #97a3bd;
+  --accent: #4da3ff;
+  --ok: #2ecc71;
+  --bad: #ff6b6b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--txt);
+  font-size: 14px;
+}
+
+header {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+header h1 { margin: 0; font-size: 18px; }
+header .sub { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
+
+#toggle-panel {
+  font-size: 18px;
+  line-height: 1;
+  padding: 6px 11px;
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+/* Panel de control colapsado: se oculta y los gráficos ocupan todo el ancho. */
+body.panel-oculto #controles { display: none; }
+
+main { display: flex; align-items: flex-start; gap: 0; }
+
+/* ---- Controles ---- */
+#controles {
+  width: 320px;
+  flex: 0 0 320px;
+  padding: 14px;
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+}
+
+.presets { margin-bottom: 12px; }
+.presets strong { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; }
+
+button {
+  background: var(--panel2);
+  color: var(--txt);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  margin: 2px 2px 2px 0;
+}
+button:hover { border-color: var(--accent); }
+button.preset { background: #1d3a5f; }
+
+/* ---- Títulos de sección y división configuración / corrida en vivo ---- */
+.seccion-titulo {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--muted);
+  margin: 2px 0 10px;
+}
+.seccion-vivo {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 2px solid var(--accent);
+}
+.seccion-vivo .seccion-titulo { color: var(--accent); }
+
+/* ---- Botón Reproducir ---- */
+#btn-play {
+  width: 100%;
+  padding: 9px;
+  font-size: 13px;
+  background: #1d4f3a;
+  border-color: #2e7d57;
+}
+#btn-play.activo { background: #5f1d1d; border-color: var(--bad); }
+
+/* ---- Sub-panel de la corrida en vivo ---- */
+.vivo-panel {
+  margin-top: 8px;
+  background: var(--panel2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+}
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.slider-row span { white-space: nowrap; }
+.slider-row b { color: var(--txt); }
+.slider-row input[type="range"] { flex: 1; accent-color: var(--accent); }
+.vivo-hint { margin: 0 0 8px; font-size: 11px; color: var(--muted); line-height: 1.3; }
+.vivo-botones { display: flex; flex-direction: column; gap: 6px; }
+.vivo-botones button { width: 100%; margin: 0; }
+#btn-comida-liviana { background: #2e5d1d; border-color: #3f7d2a; }
+#btn-comida-alta { background: #7a3b12; border-color: #a55320; }
+#btn-ejercicio { background: #1d4f5f; border-color: #2a7d8a; }
+#btn-estres { background: #5f4a1d; border-color: #8a6e2a; }
+#btn-reiniciar { background: var(--panel2); }
+
+details {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background: var(--panel2);
+}
+summary {
+  cursor: pointer;
+  padding: 8px 10px;
+  font-weight: 600;
+  user-select: none;
+}
+details > label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 10px 4px 16px;
+}
+details > label .u { color: var(--muted); font-size: 11px; flex: 1; text-align: right; margin-right: 6px; }
+input[type="number"], select {
+  width: 92px;
+  background: var(--bg);
+  color: var(--txt);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 4px 6px;
+}
+select { width: 100%; }
+
+/* ---- Eventos ---- */
+.evento-form { padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
+.evento-form label.inline {
+  display: flex; align-items: center; gap: 6px; justify-content: space-between;
+  color: var(--muted); font-size: 12px;
+}
+.evento-form label.inline input { width: 80px; }
+#ev-tabla { width: 100%; border-collapse: collapse; font-size: 12px; }
+#ev-tabla th, #ev-tabla td { padding: 3px 6px; border-bottom: 1px solid var(--line); text-align: left; }
+#ev-tabla th { color: var(--muted); font-weight: 600; }
+#ev-tabla button { padding: 1px 7px; margin: 0; }
+
+.acciones { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 4px; }
+
+/* ---- Resultados ---- */
+#resultados { flex: 1; padding: 10px 16px; height: calc(100vh - 56px); overflow-y: auto; }
+#plots { width: 100%; }
+
+/* ---- QoS ---- */
+#qos { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.qos-card {
+  background: var(--panel2);
+  border: 1px solid var(--line);
+  border-left-width: 4px;
+  border-radius: 6px;
+  padding: 6px 10px;
+  min-width: 120px;
+  cursor: help;
+}
+.qos-card .k { color: var(--muted); font-size: 11px; }
+.qos-card .v { font-size: 16px; font-weight: 700; }
+.qos-card .obj { font-size: 10px; color: var(--muted); }
+.qos-card.ok { border-left-color: var(--ok); }
+.qos-card.bad { border-left-color: var(--bad); }
