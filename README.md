@@ -1,7 +1,7 @@
 # Simulación del lazo de control — Bomba de insulina
 
 Simulador del lazo cerrado de regulación de glucemia de una bomba de insulina,
-para el **TP Integrador de Teoría de Control** (UTN-FRBA, K4011, 2026 — Moll / Maffini).
+para el **TP Integrador de Teoría de Control** (UTN-FRBA, K4011, 2026 - Moll / Maffini).
 
 El objetivo es **mostrar gráficamente el comportamiento del sistema respecto del
 control**, relacionando todas las señales del diagrama de bloques una debajo de la
