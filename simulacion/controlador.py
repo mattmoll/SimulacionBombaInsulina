@@ -42,9 +42,15 @@ class PID:
 
         # Integral cebada para arrancar en la basal con error nulo:
         #   u = Kc·(e + integ/Ti + ...)  ->  con e=0 queremos u = u_basal.
-        self.integ = (u_basal / Kc) * Ti if Kc != 0 else 0.0
+        # Con Ti = 0 se ANULA la acción integral (queda un control P o PD, que
+        # deja error en estado estable: es justamente lo que se quiere mostrar).
+        self.integ = (u_basal / Kc) * Ti if (Kc != 0 and Ti > 0) else 0.0
         self.ym_prev = None
         self.u = u_basal            # última salida retenida (ZOH)
+
+    def _termino_integral(self):
+        """Aporte del término integral (0 si la acción integral está anulada)."""
+        return self.integ / self.Ti if self.Ti > 0 else 0.0
 
     def _saturar(self, u):
         """Aplica tope IOB, saturación física y cuantización de la bomba."""
@@ -71,17 +77,17 @@ class PID:
         self.ym_prev = ym
 
         # Salida tentativa con la integral actual (todavía sin integrar este paso).
-        u_tentativa = self.Kc * (desv + self.integ / self.Ti + self.Td * deriv)
+        u_tentativa = self.Kc * (desv + self._termino_integral() + self.Td * deriv)
         u_sat = self._saturar(u_tentativa)
 
         # Anti-windup por clamping: solo se acumula la integral si la salida NO
         # está saturada, o si la nueva desviación tiende a sacarla de la saturación.
         satura_arriba = u_tentativa > u_sat
         satura_abajo = u_tentativa < u_sat
-        if not (satura_arriba and desv > 0) and not (satura_abajo and desv < 0):
+        if self.Ti > 0 and not (satura_arriba and desv > 0) and not (satura_abajo and desv < 0):
             self.integ += desv * self.Ts
 
         # Salida definitiva recalculada con la integral ya actualizada.
-        u_final = self.Kc * (desv + self.integ / self.Ti + self.Td * deriv)
+        u_final = self.Kc * (desv + self._termino_integral() + self.Td * deriv)
         self.u = self._saturar(u_final)
         return self.u

@@ -11,11 +11,15 @@ todas las señales en JSON. El graficado y la interacción ocurren en el navegad
 con Plotly.js, de modo que mover cualquier control recalcula la corrida al instante.
 """
 
+import os
+
 from flask import Flask, jsonify, render_template, request
 
 from simulacion import lazo
 
 app = Flask(__name__)
+# Recargar la plantilla al editarla, aunque el modo debug esté apagado.
+app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 
 @app.route("/")
@@ -33,4 +37,7 @@ def simular():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    # Por defecto corre en el 5000 con recarga automática (`python app.py`).
+    # Si el entorno define PORT, se usa ese puerto y se apaga el reloader.
+    puerto_env = os.environ.get("PORT")
+    app.run(debug=puerto_env is None, port=int(puerto_env or 5000))

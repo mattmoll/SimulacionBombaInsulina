@@ -34,7 +34,9 @@ class SimVivo {
     this.ymPrev = null;
     this.uBasal = Math.max((p.G0 - p.r0) / p.Kp, 0);
     this.u = this.uBasal;
-    this.integ = p.Kc !== 0 ? (this.uBasal / p.Kc) * p.Ti : 0;
+    // Con Ti = 0 se anula la acción integral (control P o PD): queda error en
+    // estado estable, que es justamente lo que se quiere poder mostrar.
+    this.integ = (p.Kc !== 0 && p.Ti > 0) ? (this.uBasal / p.Kc) * p.Ti : 0;
     // Buffer de retardo θ, inicializado en la insulina basal de equilibrio.
     this.nbuf = Math.max(Math.round(p.theta / this.dt), 0) + 1;
     const pBasal = (p.G0 - y0) / p.Kp;
@@ -54,10 +56,14 @@ class SimVivo {
   //     los 30-45 min, resolución 2-4 h. Modelado: +40 mg/dL sostenido ~150 min.
   inject(tipo) {
     const t = this.t;
-    if (tipo === "liviana")        this.eventos.push({ t0: t, dur: 90,  pico: +50,  forma: "bump" });
-    else if (tipo === "alta")      this.eventos.push({ t0: t, dur: 150, pico: +130, forma: "bump" });
-    else if (tipo === "ejercicio") this.eventos.push({ t0: t, dur: 45,  pico: -60,  forma: "meseta" });
-    else if (tipo === "estres")    this.eventos.push({ t0: t, dur: 150, pico: +40,  forma: "meseta" });
+    const defs = {
+      liviana:   { dur: 90,  pico: +50,  forma: "bump",   nombre: "Comida liviana" },
+      alta:      { dur: 150, pico: +130, forma: "bump",   nombre: "Comida alta" },
+      ejercicio: { dur: 45,  pico: -60,  forma: "meseta", nombre: "Ejercicio" },
+      estres:    { dur: 150, pico: +40,  forma: "meseta", nombre: "Estrés" },
+    };
+    const d = defs[tipo];
+    if (d) this.eventos.push({ t0: t, tipo, ...d });
   }
 
   // Efecto neto de las perturbaciones activas sobre la glucemia [mg/dL].
@@ -85,7 +91,8 @@ class SimVivo {
     if (this.ymPrev !== null) deriv = (this.ym - this.ymPrev) / p.Ts;
     this.ymPrev = this.ym;
 
-    const calc = (integ) => p.Kc * (desv + integ / p.Ti + p.Td * deriv);
+    const termI = (integ) => (p.Ti > 0 ? integ / p.Ti : 0);   // Ti = 0 => sin integral
+    const calc = (integ) => p.Kc * (desv + termI(integ) + p.Td * deriv);
     const sat = (u) => {
       u = Math.min(u, this.uBasal + p.iob_max);        // tope IOB
       u = Math.max(p.u_min, Math.min(p.u_max, u));     // saturación física
@@ -96,7 +103,7 @@ class SimVivo {
     const uTent = calc(this.integ);
     const uSat = sat(uTent);
     const satArr = uTent > uSat, satAb = uTent < uSat;
-    if (!(satArr && desv > 0) && !(satAb && desv < 0)) this.integ += desv * p.Ts;
+    if (p.Ti > 0 && !(satArr && desv > 0) && !(satAb && desv < 0)) this.integ += desv * p.Ts;
     return sat(calc(this.integ));
   }
 

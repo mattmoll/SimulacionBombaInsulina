@@ -156,6 +156,34 @@ input[type="number"], select {
 }
 select { width: 100%; }
 
+/* ---- PID ---- */
+.pid-hint {
+  margin: 4px 10px 6px 16px;
+  font-size: 10.5px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+.pid-botones { display: flex; gap: 4px; padding: 0 10px 8px 16px; }
+.pid-botones button { flex: 1; margin: 0; font-size: 11px; }
+.pid-botones button.activo { background: #1d3a5f; border-color: var(--accent); }
+.pid-comparar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 10px 10px 16px; font-size: 12px; color: var(--muted);
+}
+.pid-comparar label { display: flex; align-items: center; gap: 3px; color: var(--txt); cursor: pointer; }
+.pid-comparar input { accent-color: var(--accent); }
+
+/* Leyenda de comparación de leyes de control (encimadas) */
+#cmp-legend {
+  display: none; flex-wrap: wrap; gap: 14px; align-items: center;
+  margin: 0 0 6px; padding: 5px 10px;
+  background: var(--panel2); border: 1px solid var(--line); border-radius: 6px;
+  width: fit-content; font-size: 12px; color: var(--txt);
+}
+.cmp-item { display: flex; align-items: center; gap: 6px; }
+.cmp-sw { width: 22px; height: 0; display: inline-block; }
+.cmp-sol { border-top: 2px solid #9aa3b5; }
+
 /* ---- Eventos ---- */
 .evento-form { padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
 .evento-form label.inline {
@@ -173,6 +201,30 @@ select { width: 100%; }
 /* ---- Resultados ---- */
 #resultados { flex: 1; padding: 10px 16px; height: calc(100vh - 56px); overflow-y: auto; }
 #plots { width: 100%; }
+
+/* ---- Barra de navegación del eje de tiempo ---- */
+#tiempo-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 6px;
+  padding: 5px 8px;
+  background: var(--panel2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  width: fit-content;
+}
+#tiempo-toolbar .tt-label { color: var(--muted); font-size: 11px; margin-right: 2px; }
+#tiempo-toolbar button { margin: 0; padding: 3px 9px; font-size: 12px; line-height: 1.2; }
+#tiempo-toolbar button:disabled { opacity: .4; cursor: default; border-color: var(--line); }
+#tt-ventana {
+  min-width: 52px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 12px;
+}
+#tt-vivo.activo { background: #1d4f3a; border-color: #2e7d57; }
 
 /* ---- QoS ---- */
 #qos { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }

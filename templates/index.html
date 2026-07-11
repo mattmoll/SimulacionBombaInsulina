@@ -34,6 +34,25 @@
         <label>Set point r <span class="u">mg/dL</span><input type="number" id="r0" step="1"></label>
       </details>
 
+      <details open>
+        <summary>Controlador PID</summary>
+        <label>K<sub>c</sub> proporcional <span class="u">—</span><input type="number" id="Kc" step="0.005" min="0"></label>
+        <label>T<sub>i</sub> integral <span class="u">min</span><input type="number" id="Ti" step="5" min="0"></label>
+        <label>T<sub>d</sub> derivativo <span class="u">min</span><input type="number" id="Td" step="1" min="0"></label>
+        <p class="pid-hint">T<sub>i</sub> = 0 anula la acción integral · T<sub>d</sub> = 0 anula la derivativa</p>
+        <div class="pid-botones">
+          <button class="pid-modo" data-modo="pid">PID</button>
+          <button class="pid-modo" data-modo="pi">PI (sin D)</button>
+          <button class="pid-modo" data-modo="p">Sólo P</button>
+        </div>
+        <div class="pid-comparar" title="Encima sobre el run actual las mismas señales con otras leyes de control">
+          <span>Encimar:</span>
+          <label><input type="checkbox" id="cmp-PI"> PI</label>
+          <label><input type="checkbox" id="cmp-PD"> PD</label>
+          <label><input type="checkbox" id="cmp-P"> P</label>
+        </div>
+      </details>
+
       <details>
         <summary>Bomba: saturación e IOB</summary>
         <label>u mínima <span class="u">U/h</span><input type="number" id="u_min" step="0.1"></label>
@@ -79,8 +98,8 @@
         <button id="btn-play">▶ Iniciar tiempo real</button>
         <div class="vivo-panel">
           <label class="slider-row">
-            <span>Velocidad <b id="velLabel">1.0×</b></span>
-            <input type="range" id="vel" min="0.5" max="4" step="0.5" value="1">
+            <span>Velocidad <b id="velLabel">1×</b></span>
+            <input type="range" id="vel" min="0" max="7" step="1" value="3">
           </label>
           <p class="vivo-hint">Mientras corre, agregá un evento para ver su impacto en vivo:</p>
           <div class="vivo-botones">
@@ -98,6 +117,19 @@
     <!-- ============ Columna de resultados ============ -->
     <section id="resultados">
       <div id="qos"></div>
+
+      <div id="tiempo-toolbar">
+        <span class="tt-label">Eje de tiempo</span>
+        <button id="tt-pan-l" title="Retroceder en el tiempo">◀</button>
+        <button id="tt-zoom-out" title="Comprimir: ver más tiempo (varias perturbaciones)">−</button>
+        <span id="tt-ventana">4 h</span>
+        <button id="tt-zoom-in" title="Expandir: más detalle">+</button>
+        <button id="tt-pan-r" title="Avanzar en el tiempo">▶</button>
+        <button id="tt-vivo" title="Volver al borde en vivo">⏭ En vivo</button>
+      </div>
+
+      <div id="cmp-legend"></div>
+
       <div id="plots"></div>
     </section>
   </main>
